@@ -302,8 +302,10 @@ class LoadAnnotations:
 
         if isinstance(mask_ann, list):
             # polygon -- a single object might consist of multiple parts
+            # filter out invalid polygons (< 3 points)
+            segm = [poly for poly in mask_ann if len(poly) % 2 == 0 and len(poly) >= 6]
             # we merge all parts into one mask rle code
-            rles = maskUtils.frPyObjects(mask_ann, img_h, img_w)
+            rles = maskUtils.frPyObjects(segm, img_h, img_w)
             rle = maskUtils.merge(rles)
         elif isinstance(mask_ann['counts'], list):
             # uncompressed RLE
